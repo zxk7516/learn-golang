@@ -5,11 +5,12 @@ import (
 	"sync"
 )
 
-func main() {
+func main_05() {
 
-	numChan := make(chan int, 1999)
-	resChan := make(chan int, 1999)
+	numChan := make(chan int, 200)
+	resChan := make(chan int, 200)
 	exitChan := make(chan bool)
+	coNum := 8
 	go func(numChan chan<- int) {
 		for i := 1; i <= 2000; i++ {
 			numChan <- i
@@ -17,12 +18,9 @@ func main() {
 		close(numChan)
 	}(numChan)
 
-	wg := sync.WaitGroup{}
-	for i := 0; i < 8; i++ {
-		wg.Add(1)
+	for i := 0; i < coNum; i++ {
 		go func(numChan <-chan int, resChan chan<- int, exitChan chan<- bool) {
 			for {
-
 				n, ok := <-numChan
 				if !ok {
 					break
@@ -33,15 +31,15 @@ func main() {
 				}
 				resChan <- res
 			}
-			// exitChan <- true
-			wg.Done()
+			exitChan <- true
 		}(numChan, resChan, exitChan)
 	}
-	wg.Wait()
-	close(resChan)
-	close(exitChan)
-	// wg.Wait()
-	// close(resChan)
+	go func() {
+		for i := 0; i < coNum; i++ {
+			<-exitChan
+		}
+		close(resChan)
+	}()
 	for {
 		n, ok := <-resChan
 		if !ok {
@@ -52,7 +50,6 @@ func main() {
 
 }
 
-/*
 func WriteData_test_chan4(intChan chan int) {
 	for i := 1; i <= 50; i++ {
 		intChan <- i
@@ -159,4 +156,66 @@ type Cat struct {
 	Name string
 	Age  int
 }
-*/
+
+func putNum_main0(intChan chan int) {
+	for i := 1; i <= 80; i++ {
+		intChan <- i
+	}
+	close(intChan)
+}
+
+func primeNum_main0(intChan chan int, prime chan int, exitChan chan bool) {
+	var num int
+	var flag bool
+	var ok bool
+	for {
+		num, ok = <-intChan
+		if !ok {
+			break
+		}
+		flag = true
+		for i := 2; i < (num+1)/2; i++ {
+			if num%i == 0 {
+				flag = false
+				break
+			}
+		}
+		if flag {
+			prime <- num
+		}
+	}
+	fmt.Println("协程结束")
+	exitChan <- true
+}
+func main0() {
+	fmt.Println()
+	l := sync.WaitGroup{}
+	l.Wait()
+
+	intChan := make(chan int, 1000)
+	primeChan := make(chan int, 2000) // 放入结果
+	exitChan := make(chan bool, 4)    // 4 协和
+
+	coNum := 4
+
+	// 开启一个协和，放入1-8000个数
+	go putNum_main0(intChan)
+	for i := 0; i < coNum; i++ {
+		go primeNum_main0(intChan, primeChan, exitChan)
+	}
+	go func() {
+		for i := 0; i < coNum; i++ {
+			<-exitChan
+		}
+		close(primeChan)
+	}()
+
+	for {
+		res, ok := <-primeChan
+		if !ok {
+			break
+		}
+		println("prime: ", res)
+	}
+	fmt.Println("")
+}

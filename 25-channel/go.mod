@@ -1,3 +1,3 @@
-module zxk/24-channel
+module zxk/25-channel
 
 go 1.17
