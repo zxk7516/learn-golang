@@ -3,6 +3,8 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"reflect"
+	"strconv"
 )
 
 type Monster struct {
@@ -58,6 +60,17 @@ func main() {
 	fmt.Println(mon)
 
 	var m map[string]interface{} // 反序列化map时不需要make, Unmarshal函数会初始化
+	// m = make(map[string]interface{})
+	rv := reflect.ValueOf(&m)
+	v := rv.Interface()
+	m2 := v.(*map[string]interface{})
+	fmt.Printf("%p %p, %T, %T,%T\n", &m, m2, m, m2, rv)
+	// m3 := make(map[string]interface{},5)
+	// m3["abc"] = 1
+	// m2["abc"] = 1
+
+	k := rv.Kind()
+	fmt.Println(k, k.String(), rv.IsNil())
 	json.Unmarshal([]byte(jsonStr), &m)
 	fmt.Println(m)
 
@@ -67,4 +80,30 @@ func main() {
 	json.Unmarshal([]byte(jsonStr), &ss)
 	fmt.Println(ss)
 
+
+}
+
+func Sprint(x interface{}) string {
+	type stringer interface {
+		String() string
+	}
+
+	switch x := x.(type) {
+	case stringer:
+		return x.String()
+	case string:
+		return x
+	case int:
+		return strconv.Itoa(x)
+	case bool:
+		if x {
+			return "true"
+		} else {
+			return "false"
+		}
+	default:
+		return "??"
+	}
+
+	return ""
 }
