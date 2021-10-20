@@ -1,0 +1,31 @@
+addr: 127.0.0.1:8000
+pg_host: "127.0.0.1"
+pg_port: 5432
+pg_user: "root"
+pg_pass: ""
+pg_db: gofiberdemo
+max_idle_conn: 100
+token_expired_days: 7
+token_refresh_days: 3
+cookie_user: "b.user"
+cookie_token: "b.token"
+
+blog_announcement_url: "docs"
+blog_link_count: 12
+blog_comment_count: 12
+
+debug_mode: true
+
+media_folder: "path to media folder"
+
+send_email_reply: true
+email_smtp_host: ""
+email_smtp_port: 465
+email_smtp_username: ""
+email_smtp_password: ""
+email_admin_email: ""
+
+site_author: "ifconfiger"
+site_name: "ifconfiger"
+site_url: ""
+site_description: "site on techs"

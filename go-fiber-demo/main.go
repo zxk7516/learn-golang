@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"time"
+	"zxk/go-fiber-demo/common"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -72,6 +73,17 @@ func login(ctx *fiber.Ctx) (err error) {
 }
 
 func main() {
+
+	err := common.LoadConfig("config.yml")
+	if err != nil {
+		panic(err.Error())
+	}
+	err = common.InitDb()
+	if err != nil {
+		panic(err.Error())
+	}
+	common.TestDb()
+
 	app := fiber.New()
 	app.Use(logger.New())
 	app.Get("/", hello)
@@ -91,7 +103,7 @@ func main() {
 	app.Get("/private", jwtWare, private)
 	app.Get("/nonPrivate", hello)
 
-	err := app.Listen(":3000")
+	err = app.Listen(":3000")
 	if err != nil {
 		panic(err)
 	}
