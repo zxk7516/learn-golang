@@ -1,0 +1,2 @@
+curl --location --request GET 'http://localhost:3000/private' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MzUyNDYxMDgsInN1YiI6IjEifQ.fi4vStM5KtC0jgkOS_GaPZbkTe2OxUIIzOKWA1ZpvEE'

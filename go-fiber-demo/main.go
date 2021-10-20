@@ -22,6 +22,13 @@ func hello(ctx *fiber.Ctx) (err error) {
 	ctx.Send([]byte("hello world"))
 	return nil
 }
+func private(ctx *fiber.Ctx) (err error) {
+	user := ctx.Locals("user").(*jwt.Token)
+	claims := user.Claims.(jwt.MapClaims)
+	id := claims["sub"].(string)
+	ctx.Send([]byte(fmt.Sprintf("hello user %s", id)))
+	return nil
+}
 
 func login(ctx *fiber.Ctx) (err error) {
 	type request struct {
@@ -63,18 +70,29 @@ func login(ctx *fiber.Ctx) (err error) {
 	})
 	return
 }
+
 func main() {
 	app := fiber.New()
 	app.Use(logger.New())
 	app.Get("/", hello)
 	app.Post("/login", login)
-	app.Use(jwtware.New(jwtware.Config{
+
+	jwtWare := jwtware.New(jwtware.Config{
 		SigningKey: []byte(jwt_secret),
-	}))
+		ErrorHandler: func(c *fiber.Ctx, e error) error {
+			c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+				"error":  "Unauthorized",
+				"detail": e.Error(),
+			})
+			return nil
+		},
+	})
+
+	app.Get("/private", jwtWare, private)
+	app.Get("/nonPrivate", hello)
 
 	err := app.Listen(":3000")
 	if err != nil {
 		panic(err)
 	}
-
 }
