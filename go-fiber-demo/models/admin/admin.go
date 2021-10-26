@@ -1,4 +1,8 @@
-package models
+package admin
+
+import (
+	"zxk/go-fiber-demo/common"
+)
 
 /*
 AdminUsers
@@ -18,14 +22,14 @@ type AdminUsers struct {
 	Password string `gorm:"column:password" json:"-"`
 	Name     string `gorm:"column:name" json:"name"`
 	Avator   string `gorm:"column:avator" json:"avator"`
-	TimeStamps
+	common.TimeStamps
 }
 
 type AdminRole struct {
 	ID   uint64 `gorm:"column:id;primary_key" json:"id"`
 	Name string `gorm:"column:name" json:"name"`
 	Slug string `gorm:"column:slug" json:"slug"`
-	TimeStamps
+	common.TimeStamps
 }
 
 type AdminPersmisions struct {
@@ -34,46 +38,52 @@ type AdminPersmisions struct {
 	Slug       string `gorm:"column:slug" json:"slug"`
 	HttpMethod string `gorm:"column:http_method" json:"http_method"`
 	HttpPath   string `gorm:"column:http_path" json:"http_path"`
-	TimeStamps
+	common.TimeStamps
 }
 
 type AdminMenu struct {
 	ID         uint64 `gorm:"column:id;primary_key" json:"id"`
-	ParentId   int    `gorm:"column:parent_id" json:"parent_id"`
+	ParentId   uint64 `gorm:"column:parent_id" json:"parent_id"`
 	Order      int    `gorm:"column:order" json:"order"`
 	Title      string `gorm:"column:title" json:"title"`
 	Icon       string `gorm:"column:icon" json:"icon"`
 	Uri        string `gorm:"column:uri" json:"uri"`
 	Permisions string `gorm:"column:permisions" json:"permisions"`
-	TimeStamps
+	common.TimeStamps
 }
 
 type AdminRoleUser struct {
-	UserId int `gorm:"column:user_id;index:idx_user_role" json:"user_id"`
-	RoleId int `gorm:"column:role_id;index:idx_user_role" json:"role_id"`
+	UserId uint64 `gorm:"column:user_id;index:idx_user_role" json:"user_id"`
+	RoleId uint64 `gorm:"column:role_id;index:idx_user_role" json:"role_id"`
 }
 
 type AdminRolePermisions struct {
-	RoleId      int `gorm:"column:role_id;index:idx_role_permision" json:"role_id"`
-	PermisionId int `gorm:"column:permision_id;index:idx_role_permision" json:"permision_id"`
+	RoleId      uint64 `gorm:"column:role_id;index:idx_role_permision" json:"role_id"`
+	PermisionId uint64 `gorm:"column:permision_id;index:idx_role_permision" json:"permision_id"`
 }
 
 type AdminUserPermision struct {
-	UserId      int `gorm:"column:user_id;index:idx_user_permision" json:"user_id"`
-	PermisionId int `gorm:"column:permision_id;index:idx_user_permision" json:"permision_id"`
+	UserId      uint64 `gorm:"column:user_id;index:idx_user_permision" json:"user_id"`
+	PermisionId uint64 `gorm:"column:permision_id;index:idx_user_permision" json:"permision_id"`
 }
 
 type AdminRoleMenu struct {
-	RoleId int `gorm:"column:role_id;index:idx_role_menu" json:"role_id"`
-	MenuId int `gorm:"column:menu_id;index:idx_role_menu" json:"menu_id"`
+	RoleId uint64 `gorm:"column:role_id;index:idx_role_menu" json:"role_id"`
+	MenuId uint64 `gorm:"column:menu_id;index:idx_role_menu" json:"menu_id"`
 }
 
 type AdminOperationLog struct {
 	ID         uint64 `gorm:"column:id;primary_key" json:"id"`
-	UserId     int    `gorm:"column:user_id;index" json:"user_id"`
+	UserId     uint64 `gorm:"column:user_id;index" json:"user_id"`
 	HttpMethod string `gorm:"column:http_method" json:"http_method"`
 	HttpPath   string `gorm:"column:http_path" json:"http_path"`
 	Ip         string `gorm:"column:ip" json:"ip"`
 	Input      string `gorm:"column:input" json:"input"`
-	TimeStamps
+	common.TimeStamps
+}
+
+func GetAdminUser(condition interface{}) (AdminUsers, error) {
+	var user AdminUsers
+	err := common.DB.Where(condition).First(&user).Error
+	return user, err
 }

@@ -10,6 +10,9 @@ token_refresh_days: 3
 cookie_user: "b.user"
 cookie_token: "b.token"
 
+user_jwt_secret: "abc"
+admin_jwt_secret: "def"
+
 blog_announcement_url: "docs"
 blog_link_count: 12
 blog_comment_count: 12

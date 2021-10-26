@@ -18,7 +18,7 @@ type User struct {
 	Role      string    `gorm:"column:role" json:"role"`
 	Avatar    string    `gorm:"column:avatar" json:"avatar"`
 	Activated int       `gorm:"column:activated" json:"-"`
-	TimeStamps
+	common.TimeStamps
 }
 
 func (u *User) TableName() string {
@@ -39,10 +39,7 @@ func GetUsers(condition interface{}) ([]User, error) {
 
 func (u *User) CheckPassword(password string) bool {
 	valid, _ := unchained.CheckPassword(password, u.Password)
-	if valid {
-		return true
-	}
-	return false
+	return valid
 }
 
 func (u *User) HashPassword(password string) string {

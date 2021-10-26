@@ -13,6 +13,8 @@ type Config struct {
 	PgUser              string `yaml:"pg_user"`
 	PgPass              string `yaml:"pg_pass"`
 	PgDb                string `yaml:"pg_db"`
+	UserJwtSecret       string `yaml:"user_jwt_secret"`
+	AdminJwtSecret      string `yaml:"admin_jwt_secret"`
 	MaxIdleConn         int    `yaml:"max_idle_conn"`
 	TokenExpiredDays    int    `yaml:"token_expired_days"`
 	TokenRefreshDays    int    `yaml:"token_refresh_days"`

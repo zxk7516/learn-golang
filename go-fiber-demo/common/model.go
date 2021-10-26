@@ -1,4 +1,4 @@
-package models
+package common
 
 import "time"
 
@@ -10,4 +10,8 @@ type TimeStamps struct {
 type TimeStampsH struct {
 	CreatedAt time.Time `json:"-"`
 	UpdatedAt time.Time `json:"-"`
+}
+
+type Password struct {
+	Password string
 }

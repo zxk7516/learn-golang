@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 	"zxk/go-fiber-demo/common"
-	"zxk/go-fiber-demo/models"
+	"zxk/go-fiber-demo/controller"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -84,7 +84,7 @@ func main() {
 		panic(err.Error())
 	}
 	common.TestPgDb()
-	models.MakeMigrations()
+	// models.MakeMigrations()
 
 	app := fiber.New()
 	app.Use(logger.New())
@@ -103,8 +103,24 @@ func main() {
 		},
 	})
 
+	adminJwtWare := jwtware.New(jwtware.Config{
+		TokenLookup: "header:AdminToken",
+		SigningKey:  []byte(jwt_secret),
+		ErrorHandler: func(c *fiber.Ctx, e error) error {
+			c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+				"error":  "Unauthorized",
+				"detail": e.Error(),
+			})
+			return nil
+		},
+	})
+
 	app.Get("/private", jwtWare, private)
 	app.Get("/nonPrivate", hello)
+
+	app.Post("/admin/login", controller.AdminLogin)
+	adminRoute := app.Group("/admin", adminJwtWare)
+	adminRoute.Get("/users", nil)
 
 	err = app.Listen(":3000")
 	if err != nil {

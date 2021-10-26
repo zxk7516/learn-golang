@@ -21,7 +21,7 @@ type Page struct {
 	IsOriginal    bool   `gorm:"column:is_original" json:"is_original"`
 	NumLookup     int    `gorm:"column:num_lookup" json:"num_lookup"`
 	HTML          string `gorm:"column:html" json:"html"`
-	TimeStamps
+	common.TimeStamps
 }
 
 func (p *Page) TableName() string {
