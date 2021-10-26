@@ -1,6 +1,9 @@
 package models
 
-import "time"
+import (
+	"time"
+	"zxk/go-fiber-demo/common"
+)
 
 type Page struct {
 	ID            int        `gorm:"column:id;primary_key" json:"id"`
@@ -21,4 +24,35 @@ type Page struct {
 	IsOriginal    bool       `gorm:"column:is_original" json:"is_original"`
 	NumLookup     int        `gorm:"column:num_lookup" json:"num_lookup"`
 	HTML          string     `gorm:"column:html" json:"html"`
+}
+
+func (p *Page) TableName() string {
+	return "page"
+}
+
+func (p *Page) GetFullURL(schema, host string) string {
+	return schema + "://" + host + "/" + p.URL
+}
+
+func GetPage(condition interface{}) (Page, error) {
+	var page Page
+	err := common.DB.Where(condition).First(&page).Error
+	return page, err
+}
+func GetPagesByIds(ids []int) ([]Page, error) {
+	var page []Page
+	err := common.DB.Where("id in ?", ids).First(&page).Error
+	return page, err
+}
+
+func GetPages(condition interface{}, p *common.Pagination) ([]Page, error) {
+	var pages []Page
+	err := common.DB.Where(condition).Order("id desc").Offset(p.GetOffset()).Limit(p.GetLimit()).Find(&pages).Error
+	return pages, err
+}
+
+func SearchPage(tagname string, p *common.Pagination) ([]Page, error) {
+	var pages []Page
+	err := common.DB.Where("tags like ?", "%"+tagname+"%").Order("id desc").Offset(p.GetOffset()).Limit(p.GetLimit()).Find(&pages).Error
+	return pages, err
 }

@@ -21,7 +21,7 @@ func InitDb() (err error) {
 	return
 }
 
-func TestDb() {
+func TestPgDb() {
 	var result string
 	var iresult int
 	DB.Raw("select now() as res;").Scan(&result)

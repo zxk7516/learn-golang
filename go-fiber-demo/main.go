@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 	"zxk/go-fiber-demo/common"
+	"zxk/go-fiber-demo/models"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -82,12 +83,14 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
-	common.TestDb()
+	common.TestPgDb()
+	models.MakeMigrations()
 
 	app := fiber.New()
 	app.Use(logger.New())
 	app.Get("/", hello)
 	app.Post("/login", login)
+	app.Post("/register", login)
 
 	jwtWare := jwtware.New(jwtware.Config{
 		SigningKey: []byte(jwt_secret),
