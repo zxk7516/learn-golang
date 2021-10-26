@@ -18,8 +18,7 @@ type User struct {
 	Role      string    `gorm:"column:role" json:"role"`
 	Avatar    string    `gorm:"column:avatar" json:"avatar"`
 	Activated int       `gorm:"column:activated" json:"-"`
-	CreatedAt time.Time `gorm:"column:created_at" json:"-"`
-	UpdatedAt time.Time `gorm:"column:updated_at" json:"-"`
+	TimeStamps
 }
 
 func (u *User) TableName() string {
