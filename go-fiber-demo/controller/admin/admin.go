@@ -1,4 +1,4 @@
-package controller
+package admin
 
 import (
 	"fmt"
@@ -9,6 +9,12 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt"
 )
+
+func AdminUsers(ctx *fiber.Ctx) (err error) {
+	p := fiber.Map{"status": "ok"}
+	ctx.Status(fiber.StatusOK).JSON(p)
+	return
+}
 
 func AdminLogin(ctx *fiber.Ctx) (err error) {
 

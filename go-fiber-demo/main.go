@@ -2,11 +2,13 @@ package main
 
 import (
 	"fmt"
+	"runtime"
 	"time"
 	"zxk/go-fiber-demo/common"
-	"zxk/go-fiber-demo/controller"
+	"zxk/go-fiber-demo/controller/admin"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	jwtware "github.com/gofiber/jwt/v3"
 	"github.com/golang-jwt/jwt/v4"
@@ -88,6 +90,9 @@ func main() {
 
 	app := fiber.New()
 	app.Use(logger.New())
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "http://localhost, http://localhost:3000, http://127.0.0.1, https://gofiber.net",
+	}))
 	app.Get("/", hello)
 	app.Post("/login", login)
 	app.Post("/register", login)
@@ -103,24 +108,13 @@ func main() {
 		},
 	})
 
-	adminJwtWare := jwtware.New(jwtware.Config{
-		TokenLookup: "header:AdminToken",
-		SigningKey:  []byte(jwt_secret),
-		ErrorHandler: func(c *fiber.Ctx, e error) error {
-			c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-				"error":  "Unauthorized",
-				"detail": e.Error(),
-			})
-			return nil
-		},
-	})
-
 	app.Get("/private", jwtWare, private)
 	app.Get("/nonPrivate", hello)
 
-	app.Post("/admin/login", controller.AdminLogin)
-	adminRoute := app.Group("/admin", adminJwtWare)
-	adminRoute.Get("/users", nil)
+	adminJwt := admin.GetAdminJwtWare()
+	adminRoute := app.Group("/admin", adminJwt)
+	adminRoute.Post("/login", admin.AdminLogin)
+	adminRoute.Get("/users", admin.AdminUsers)
 
 	err = app.Listen(":3000")
 	if err != nil {

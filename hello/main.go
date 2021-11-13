@@ -2,12 +2,81 @@ package main
 
 import (
 	"fmt"
+	"image"
+	"image/color"
+	"image/gif"
+	"io"
+	"math"
 	"math/rand"
+	"os"
 	"strings"
 	"sync"
 	"time"
 	"unsafe"
 )
+
+var palette = []color.Color{color.White, color.Black}
+
+const (
+	whiteIndex = 0
+	blackIndex = 1
+)
+
+func main() {
+	var a [3]int
+	fmt.Printf("%v\n", a)
+	var a1 = [...]int{1, 2, 3}
+	fmt.Printf("%v\n", a1)
+	var b = make([]int, 0, 10)
+	fmt.Printf("%v\n", b)
+	var c = make([]int, 10)
+	fmt.Printf("%v\n", c)
+
+	for i := range a {
+		fmt.Printf("a[%d]: %d\n", i, a[i])
+	}
+
+}
+
+func main2313lkjkl() {
+	rand.Seed(time.Now().UTC().UnixNano())
+	lissajous(os.Stdout)
+}
+
+func lissajous(out io.Writer) {
+	const (
+		cycles  = 5
+		res     = 0.001
+		size    = 100
+		nframes = 64
+		delay   = 8
+	)
+	freq := rand.Float64() * 3.0
+	anim := gif.GIF{LoopCount: nframes}
+	phase := 0.0
+	for i := 0; i < nframes; i++ {
+		rect := image.Rect(0, 0, 2*size+1, 2*size+1)
+		img := image.NewPaletted(rect, palette)
+		for t := 0.0; t < cycles*2*math.Pi; t += res {
+			x := math.Sin(t)
+			y := math.Sin(t*freq + phase)
+			img.SetColorIndex(size+int(x*size+0.5), size+int(y*size+0.5), blackIndex)
+		}
+		phase += 0.1
+		anim.Delay = append(anim.Delay, delay)
+		anim.Image = append(anim.Image, img)
+	}
+	gif.EncodeAll(out, &anim)
+}
+
+func main223kljld() {
+	var s, sep string
+	for i := 1; i < len(os.Args); i++ {
+		s += sep + os.Args[i]
+		sep = " "
+	}
+	fmt.Println(s)
+}
 
 type Foo struct {
 	A int8 // 1
@@ -29,7 +98,7 @@ type Bar2 struct {
 	y *Foo //         8
 }
 
-func main() {
+func main211118() {
 	var f Foo
 	fmt.Println(unsafe.Sizeof(f))
 	fmt.Printf("A: %p, B: %p, C: %p\n", &f.A, &f.B, &f.C)

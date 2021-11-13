@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"gorm.io/driver/postgres"
-	_ "gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
