@@ -5,6 +5,8 @@ import (
 	"image"
 	"image/color"
 	"image/gif"
+	"image/jpeg"
+	"image/png"
 	"io"
 	"math"
 	"math/rand"
@@ -32,9 +34,34 @@ func main() {
 	var c = make([]int, 10)
 	fmt.Printf("%v\n", c)
 
-	for i := range a {
-		fmt.Printf("a[%d]: %d\n", i, a[i])
+	for i := range a1 {
+		fmt.Printf("a1[%d]: %d\n", i, a1[i])
 	}
+	for i, v := range a1 {
+		fmt.Printf("a1[%d]: %d\n", i, v)
+	}
+
+	for i := 0; i < len(a1); i++ {
+		fmt.Printf("a1[%d]: %d\n", i, a1[i])
+	}
+
+	var times [5][0]int
+	for range times {
+		fmt.Println("times")
+	}
+
+	var s1 = [2]string{"hello", "world"}
+	var s2 = [...]string{"hello", "world"}
+	var s3 = [...]string{1: "world", 0: "hello"}
+	fmt.Println(s1, s2, s3)
+
+	var line1 [2]image.Point
+	var line2 = [...]image.Point{{X: 0, Y: 0}, image.Point{X: 1, Y: 1}}
+	var line3 = [...]image.Point{{0, 0}, {1, 1}}
+	fmt.Println(line1, line2, line3)
+
+	// var decoder1 = [2]func(io.Reader) (image.Image, error){png.Decode, jpeg.Decode}
+	var decoder1 [2]func(io.Reader) (image.Image, error) = [2]func(io.Reader) (image.Image, error){png.Decode, jpeg.Decode}
 
 }
 

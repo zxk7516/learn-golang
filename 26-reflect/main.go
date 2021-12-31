@@ -11,9 +11,43 @@ type student struct {
 }
 
 func main() {
-	a := student{"zxk", 18}
-	test(a)
-	test2()
+	// test2()
+	rf1()
+}
+
+type Coder struct {
+	Name string
+}
+
+func (c *Coder) String() string {
+	return c.Name
+}
+
+func rf1() {
+	coder := &Coder{Name: "Kippa"}
+	val := reflect.ValueOf(coder)
+	typ := reflect.TypeOf(coder)
+	typeOfStringer := reflect.TypeOf((*fmt.Stringer)(nil)).Elem()
+	fmt.Println(val)
+	fmt.Println(typ)
+	fmt.Println(typ.Kind())
+	fmt.Println(val.Type().Implements(typeOfStringer))
+}
+
+
+
+// 
+// 
+//                             ┌───────────────┐ TypeOf/ValueOf──────────┐
+//   ┌───────┐                 │               │ ◄─────────── │          │
+//   │ value │◄────TypeCast────┤               │              │reflection│
+//   └───────┘                 │interface value│  Interface() │  object  │
+//                             │               │◄─────────────┤          │
+//                             └───────────────┘              └──────────┘
+
+
+func rf2() {
+
 }
 
 type user struct {
